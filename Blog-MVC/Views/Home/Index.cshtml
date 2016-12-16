@@ -1,0 +1,29 @@
+﻿@{
+    ViewBag.Title = "Най-нови 5 статии";
+}
+
+<h1>@ViewBag.Title</h1>
+
+
+    @model List<Blog_MVC.Models.Article>
+
+    <section class="row">
+        @foreach (var article in Model.OrderByDescending( a=> a.Date).Take(5))
+        {
+            <article class="post col-md-6">
+                        <h2 class="title">
+                           @Html.ActionLink(@article.Title, "Details", "Article", new { @id = article.Id }, null)
+                          </h2>
+                <div class="about">
+                    Публикувано
+                    @if (article.Author != null)
+                           {
+                        @:от
+                        <p><i>@article.Author.FullName (@article.Author.UserName)</i></p>
+                    }
+                     на <i>@article.Date</i>
+                </div>
+                <div class="body">@Html.Raw(article.Body)</div>
+                </article>
+        }
+    </section>

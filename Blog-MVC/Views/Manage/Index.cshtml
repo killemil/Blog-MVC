@@ -1,0 +1,36 @@
+﻿@model Blog_MVC.Models.IndexViewModel
+@{
+    ViewBag.Title = "Профил";
+}
+
+
+<div class="container">
+    <div class="well">
+
+        <h2>@ViewBag.Title</h2>
+        <p>
+
+        </p>
+
+        <p class="text-success">@ViewBag.StatusMessage</p>
+        <div>
+            <dl class="dl-horizontal">
+                <dt>Парола:</dt>
+                <dd>
+                    
+                    @if (Model.HasPassword)
+                    {
+                        @Html.ActionLink("Смяна на парола", "ChangePassword",null, new { @class = "btn btn-warning btn-xs" })
+                    }
+                    else
+                    {
+                        @Html.ActionLink("Create", "SetPassword")
+                    }
+                    
+                </dd>
+            </dl>
+        </div>
+
+    </div>
+</div>
+

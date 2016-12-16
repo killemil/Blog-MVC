@@ -1,0 +1,34 @@
+﻿@model Blog_MVC.Models.Comment
+@{
+    ViewBag.Title = "Delete";
+}
+<div class="container">
+    <div class="well">
+        <h2>Изтриване на коментар</h2>
+            @using (Html.BeginForm("Delete", "Comment", FormMethod.Post, new { @class = "form-horizontal" }))
+            {
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Text, "Текст", new { @class = "control-label col-sm-4" })
+                    <div class="col-sm-4 ">
+                        @Html.TextAreaFor(m => m.Text, new { @class = "form-control", @readonly = "readonly" , @rows = 10})
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Author.FullName, "Автор", new { @class = "control-label col-sm-4" })
+                    <div class="col-sm-4 ">
+                        @Html.TextBoxFor(m => m.Author.FullName, new { @class = "form-control", @readonly = "readonly" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-4 col-sm-offset-4">
+                        @Html.ActionLink("Отказ", "Details", "Article", new { @id = Model.ArticleId }, new { @class = "btn btn-default" })
+                        <input type="submit" value="Изтриване" class="btn btn-danger" />
+                    </div>
+                </div>
+            }
+    </div>
+</div>
+
+

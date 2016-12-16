@@ -1,0 +1,139 @@
+﻿@model Blog_MVC.Models.Article
+
+@{
+    ViewBag.Title = "Details";
+}
+<div class="container">
+    <div class="well">
+        <h1>@Html.DisplayFor(model => model.Title)</h1>
+
+        <div>
+
+            <dl class="dl-horizontal">
+
+                <dt>
+                    Съдаржание
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Body)
+                </dd>
+                <p>
+                </p>
+                <dt>
+                    Автор
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Author.FullName)
+                </dd>
+                <p>
+                </p>
+                <dt>
+                    Дата на публикуване
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Date)
+                </dd>
+
+                <p>
+                </p>
+
+                <dt>
+                    В категория
+                </dt>
+
+                <dd>
+                    @Html.ActionLink(Model.Category.Name,"ListByCategory","Home", new {@id = Model.Category.Id }, null)
+                </dd>
+
+            </dl>
+        </div>
+        <p>
+            @Html.ActionLink("Назад", "Index", null, new { @class = "btn btn-default" })
+            @if (User.IsInRole("Admin") || Model.IsAuthor(User.Identity.Name))
+            {
+                @Html.ActionLink("Редактирай", "Edit", new { id = Model.Id }, new { @class = "btn btn-info" })
+                @Html.ActionLink("Изтриване", "Delete", new { id = Model.Id }, new { @class = "btn btn-danger" })
+            }
+            @Html.ActionLink("Коментирай", "Create", "Comment", new { id = Model.Id }, new { @class = "btn btn-warning" })
+        </p>
+    </div>
+</div>
+
+
+
+<div class="container">
+    <div class="well">
+        <div>
+            <h1><b>
+                
+            @if (Model.Comments.Count() == 1)
+                {
+                   @Model.Comments.Count() @:Коментар по темата
+                }
+            else if (Model.Comments.Count() == 0)
+                {
+                    @:Все още няма коментари по темата
+                }
+            else
+                {
+                @Model.Comments.Count() @:Коментара по темата
+                }
+
+        </b> </h1>
+        </div>
+        <table class="table table-striped table-bordered">
+            <tr>
+                <th>
+                    Коментар
+                </th>
+                <th>
+                    Автор
+                </th>
+                <th>
+                    Дата
+                </th>
+                @if (User.IsInRole("Admin"))
+                {
+                    <th>
+                        Действия
+                    </th>
+                }
+            </tr>
+
+                @foreach (var comment in Model.Comments.OrderByDescending(c => c.Date))
+                {
+                    <tr>
+                        <td>
+                            @comment.Text
+                        </td>
+                        <td>
+                            @if (comment.Author == null)
+                            {
+                                <i>(анонимен потребител)</i>
+                            }
+                            else
+                            { 
+                                @comment.Author.FullName
+                            }
+                        </td>
+                        <td>
+                            @comment.Date
+                        </td>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <td>
+                                @Html.ActionLink("Изтрии", "Delete","Comment", new { id = comment.Id }, new { @class = "btn btn-danger btn-xs" })
+                                @Html.ActionLink("Редактирай", "Edit", "Comment", new { id = comment.Id }, new { @class = "btn btn-info btn-xs" })
+                            </td>
+                        }
+                    </tr>
+                    
+                }
+            </table>
+</div>
+    </div>
+    
+

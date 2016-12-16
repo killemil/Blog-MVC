@@ -1,0 +1,56 @@
+﻿@model Blog_MVC.Models.Article
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<div class="container">
+    <div class="well">
+        <h2>Изтриване на статия</h2>
+
+
+        <div>
+            <dl class="dl-horizontal">
+                <dt>
+                    Заглавие
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Title)
+                </dd>
+                <p></p>
+                <dt>
+                    Съдаржание
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Body)
+                </dd>
+                <p>
+
+                </p>
+
+                <dt>
+                    Дата на публикуване
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Date)
+                </dd>
+
+            </dl>
+
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="form-actions no-color">
+                    @Html.ActionLink("Назад", "Index", null, new { @class = "btn btn-default" })
+                    <input type="submit" value="Изтриване" class="btn btn-danger" /> 
+                    
+                </div>
+            }
+        </div>
+
+    </div>
+</div>
