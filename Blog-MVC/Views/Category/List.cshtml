@@ -1,4 +1,7 @@
-﻿@model List<Blog_MVC.Models.Category>
+﻿@using PagedList.Mvc;
+@using PagedList;
+
+@model PagedList<Blog_MVC.Models.Category>
 
 @{
     ViewBag.Title = "List";
@@ -6,7 +9,7 @@
 
 <div class="container">
     <div class="well">
-        <h2>Списък категории @Html.ActionLink("Създай нова", "Create", "Category", null, new { @class = "btn btn-warning" })</h2>
+        <h1><b>Списък категории</b> @Html.ActionLink("Нова категория", "Create", "Category", null, new { @class = "btn btn-warning" })</h1>
         <div class="row">
             <table class="table table-striped table-hover col-sm-12">
                 <thead>
@@ -30,6 +33,12 @@
                     }
                 </tbody>
             </table>
+            <div class="col-sm-4">
+                <div class="left">
+                    @Html.PagedListPager(Model, page => Url.Action("List", new { page, pageSize = Model.PageSize }))
+                    Показване на @Model.FirstItemOnPage до @Model.LastItemOnPage от общо @Model.TotalItemCount Статии
+                </div>
+            </div>
         </div>
     </div>
 </div>

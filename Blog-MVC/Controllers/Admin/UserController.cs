@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using PagedList;
 
 namespace Blog_MVC.Controllers.Admin
 {
@@ -21,16 +22,18 @@ namespace Blog_MVC.Controllers.Admin
             return RedirectToAction("List");
         }
 
-        public ActionResult List()
+        public ActionResult List(int page = 1, int pageSize = 5)
         {
             using (var db = new ApplicationDbContext())
             {
-                var users = db.Users.ToList();
+                var users = db.Users.OrderBy(u=> u.FullName).ToList();
 
                 var admins = GetAdminUserNames(users, db);
                 ViewBag.Admins = admins;
 
-                return View(users);
+                var model = new PagedList<ApplicationUser>(users, page, pageSize);
+
+                return View(model);
             }
         }
 

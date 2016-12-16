@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using PagedList;
 
 namespace Blog_MVC.Controllers.Admin
 {
@@ -20,13 +21,15 @@ namespace Blog_MVC.Controllers.Admin
             return RedirectToAction("List");
         }
 
-        public ActionResult List()
+        public ActionResult List(int page = 1, int pageSize = 5)
         {
             using (var db = new ApplicationDbContext())
             {
-                var categories = db.Categories.ToList();
+                var categories = db.Categories.OrderBy(c=> c.Name).ToList();
 
-                return View(categories);
+                var model = new PagedList<Category>(categories, page, pageSize);
+
+                return View(model);
             }
         }
 

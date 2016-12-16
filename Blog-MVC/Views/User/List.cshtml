@@ -1,13 +1,15 @@
-﻿@model List<Blog_MVC.Models.ApplicationUser>
+﻿@using PagedList.Mvc;
+@using PagedList;
 
+@model PagedList<Blog_MVC.Models.ApplicationUser>
 @{
     ViewBag.Title = "List";
 }
 
 <div class="container">
     <div class="well">
-        <h2>Потребители</h2>
-
+        <h1><b>Потребители</b></h1>
+        <div class="row">
         <table class="table table-striped table-hover">
             <thead>
                 <tr>
@@ -39,5 +41,12 @@
 
 </tbody>
         </table>
+        <div class="col-sm-4">
+            <div class="left">
+                @Html.PagedListPager(Model, page => Url.Action("List", new { page, pageSize = Model.PageSize }))
+                Показване на @Model.FirstItemOnPage до @Model.LastItemOnPage от общо @Model.TotalItemCount Статии
+            </div>
+        </div>
+        </div>
     </div>
 </div>

@@ -1,5 +1,9 @@
-﻿@model List<Blog_MVC.Models.Article>
+﻿@using PagedList.Mvc;
+@using PagedList;
 @using Blog_MVC.Classes
+
+@model PagedList<Blog_MVC.Models.Article>
+
 
 @{
     ViewBag.Title = "ListByCategory";
@@ -7,7 +11,7 @@
 
 <div class="container">
     <div class="well">
-        <h2>
+        <h1>
         @if (Model.Count == 1)
         {
            @Model.Count @:статия в категория :
@@ -20,69 +24,76 @@
         {
            @Model.Count @:статии в категория :
         }
-          <u>@ViewBag.Category.Name</u></h2>
-
-        <table class="table table-striped table-bordered">
-            <tr>
-                <th>
-                    Заглавие
-                </th>
-                <th>
-                    Съдаржание
-                </th>
-
-                <th>
-                    Дата
-                </th>
-                <th>
-                    Автор
-                </th>
-                <th>
-                    Действия
-                </th>
-            </tr>
-            @foreach (var article in Model.OrderByDescending(a => a.Date))
-            {
+          <u>@ViewBag.Category.Name</u></h1>
+        <div class="row">
+            <table class="table table-striped table-bordered">
                 <tr>
-                    <td>
-                        @Html.ActionLink(@article.Title, "Details", "Article", new { @id = article.Id }, null)
-                    </td>
-                    <td>
-                        @Utils.CutText(article.Body)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => article.Date)
-                    </td>
-                    <td>
-                        @if (article.Author != null)
-                        {
-                            @article.Author.FullName
-                        }
-                        else
-                        {
-                            <i>(няма автор)</i>
-                        }
-                    </td>
-                    <td>
-                        @if (User.IsInRole("Admin") || article.IsAuthor(User.Identity.Name))
-                        {
-                            @Html.ActionLink("Редактирай", "Edit", new { id = article.Id }, new { @class = "btn btn-info btn-xs" })
+                    <th>
+                        Заглавие
+                    </th>
+                    <th>
+                        Съдаржание
+                    </th>
 
-                        }
-                        @if (User.IsInRole("Admin"))
-                        {
-                            @Html.ActionLink("Изтриване", "Delete", new { id = article.Id }, new { @class = "btn btn-danger btn-xs" })
-                        }
-
-
-                        @Html.ActionLink("Чети още", "Details","Article", new { id = article.Id }, new { @class = "btn btn-success btn-xs" })
-
-                        @Html.ActionLink("Коментирай", "Create", "Comment", new { id = article.Id }, new { @class = "btn btn-warning btn-xs" })
-                    </td>
+                    <th>
+                        Дата
+                    </th>
+                    <th>
+                        Автор
+                    </th>
+                    <th>
+                        Действия
+                    </th>
                 </tr>
+                @foreach (var article in Model)
+            {
+                    <tr>
+                        <td>
+                            @Html.ActionLink(@article.Title, "Details", "Article", new { @id = article.Id }, null)
+                        </td>
+                        <td>
+                            @Utils.CutText(article.Body)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => article.Date)
+                        </td>
+                        <td>
+                            @if (article.Author != null)
+                            {
+                                @article.Author.FullName
+                            }
+                            else
+                            {
+                                <i>(няма автор)</i>
+                            }
+                        </td>
+                        <td>
+                            @if (User.IsInRole("Admin") || article.IsAuthor(User.Identity.Name))
+                            {
+                                @Html.ActionLink("Редактирай", "Edit", new { id = article.Id }, new { @class = "btn btn-info btn-xs" })
 
-            }
-        </table>
+                            }
+                            @if (User.IsInRole("Admin"))
+                            {
+                                @Html.ActionLink("Изтриване", "Delete", new { id = article.Id }, new { @class = "btn btn-danger btn-xs" })
+                            }
+
+
+                            @Html.ActionLink("Чети още", "Details", "Article", new { id = article.Id }, new { @class = "btn btn-success btn-xs" })
+
+                            @Html.ActionLink("Коментирай", "Create", "Comment", new { id = article.Id }, new { @class = "btn btn-warning btn-xs" })
+                        </td>
+                    </tr>
+
+                }
+            </table>
+            <div class="col-sm-4">
+                <div class="left">
+                    @Html.PagedListPager(Model, page => Url.Action("ListByCategory", new { page, pageSize = Model.PageSize }))
+                    Показване на @Model.FirstItemOnPage до @Model.LastItemOnPage от общо @Model.TotalItemCount Статии
+                </div>
+            </div>
+        </div>
 </div>
 </div>
 

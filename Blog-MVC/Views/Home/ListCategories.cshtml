@@ -1,11 +1,14 @@
-﻿@model List<Blog_MVC.Models.Category>
+﻿@using PagedList.Mvc;
+@using PagedList;
+
+@model PagedList<Blog_MVC.Models.Category>
 
 @{
     ViewBag.Title = "List";
 }
 <div class="container">
     <div class="well">
-        <h2>Списък категории</h2>
+        <h1><b>Списък категории</b></h1>
         <div class="row">
             <table class="table table-striped table- table-bordered col-sm-12">
                 <thead>
@@ -15,7 +18,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var category in Model.OrderBy(c=> c.Name))
+                    @foreach (var category in Model)
                     {
                         <tr>
                             <td>@Html.ActionLink(@category.Name, "ListByCategory", "Home", new { @id = category.Id }, null)</td>
@@ -27,6 +30,12 @@
                     }
                 </tbody>
             </table>
+            <div class="col-sm-4">
+                <div class="left">
+                    @Html.PagedListPager(Model, page => Url.Action("ListCategories", new { page, pageSize = Model.PageSize }))
+                    Показване на @Model.FirstItemOnPage до @Model.LastItemOnPage от общо @Model.TotalItemCount Статии
+                </div>
+            </div>
         </div>
     </div>
 </div>

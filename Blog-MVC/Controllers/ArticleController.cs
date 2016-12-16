@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Blog_MVC.Models;
+using PagedList;
 
 namespace Blog_MVC.Controllers
 {
@@ -24,8 +25,10 @@ namespace Blog_MVC.Controllers
         }
 
         // GET: Article
-        public ActionResult Index(string sortOrder)
+        public ActionResult Index(string sortOrder, int page = 1, int pageSize = 5)
         {
+            ViewBag.CurrentSort = sortOrder;
+
             ViewBag.TitleSort = sortOrder == "Title" ?  "title_desc" : "Title";
             ViewBag.BodySort = sortOrder == "Body" ? "body_desc" : "Body";
             ViewBag.DateSort = sortOrder == "Date" ? "date_desc" : "Date";
@@ -60,11 +63,14 @@ namespace Blog_MVC.Controllers
                 case "Author":
                     articlesWithAuthor = articlesWithAuthor.OrderBy(a => a.Author.FullName);
                     break;
-                default:
+                default: articlesWithAuthor = articlesWithAuthor.OrderByDescending(a => a.Date);
                     break;
             }
 
-            return View(articlesWithAuthor.ToList());
+            var model = new PagedList<Article>(articlesWithAuthor, page, pageSize);
+
+
+            return View(model);
         }
 
         // GET: Article/Details/5
