@@ -15,9 +15,9 @@ namespace Blog_MVC.Controllers
         public ActionResult Index()
         {
             var db = new ApplicationDbContext();
-            var articles = db.Articles;
+            var articles = db.Articles.OrderByDescending(a=> a.ViewCount).Take(5).ToList();
 
-            return View(articles.ToList());
+            return View(articles);
         }
 
         public ActionResult ListCategories(int page = 1, int pageSize = 5)

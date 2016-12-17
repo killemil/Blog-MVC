@@ -1,5 +1,6 @@
-﻿@{
-    ViewBag.Title = "Най-нови 5 статии";
+﻿
+@{
+    ViewBag.Title = "Най-четените 5";
 }
 
 <h1>@ViewBag.Title</h1>
@@ -7,23 +8,46 @@
 
     @model List<Blog_MVC.Models.Article>
 
+
     <section class="row">
-        @foreach (var article in Model.OrderByDescending( a=> a.Date).Take(5))
+   
+        @foreach (var article in Model)
         {
-            <article class="post col-md-6">
-                        <h2 class="title">
-                           @Html.ActionLink(@article.Title, "Details", "Article", new { @id = article.Id }, null)
-                          </h2>
-                <div class="about">
-                    Публикувано
-                    @if (article.Author != null)
-                           {
-                        @:от
-                        <p><i>@article.Author.FullName (@article.Author.UserName)</i></p>
-                    }
-                     на <i>@article.Date</i>
-                </div>
-                <div class="body">@Html.Raw(article.Body)</div>
+            <div class="col-sm-6">
+                <article>
+                    <header>
+                        <h2 style="width: auto; word-wrap: break-word;">
+                            @Html.ActionLink(@article.Title, "Details", "Article", new { @id = article.Id }, null)
+                        </h2>
+                    </header>
+                    
+                    <div style="width: auto; word-wrap: break-word;">
+                        &emsp; @Html.Raw(article.Body)
+                    </div>
+                    <br />
+                    <footer>
+                        <div class="pull-right">
+                            <i>
+                            Публикувано
+                            @if (article.Author != null)
+                            {
+                                    @:от
+                                    <p>
+                                        @article.Author.FullName (@article.Author.UserName)
+                                    </p>
+                            }
+                            на @article.Date</i>
+                        </div>
+                        <br />
+                        <div class="pull-left">
+                            @foreach (var tag in article.Tags)
+                            {
+                                @Html.ActionLink(tag.Name, "Index", "Tag", new { @id = tag.Id }, new { @class = "btn btn-success btn-xs" }) @:&nbsp;
+                            }
+                        </div>
+                    </footer>
                 </article>
+                </div>
         }
-    </section>
+</section>
+<hr />

@@ -33,9 +33,10 @@ namespace Blog_MVC.Controllers
             ViewBag.BodySort = sortOrder == "Body" ? "body_desc" : "Body";
             ViewBag.DateSort = sortOrder == "Date" ? "date_desc" : "Date";
             ViewBag.AuthorSort = sortOrder == "Author" ? "author_desc" : "Author";
+            ViewBag.ViewSort = sortOrder == "ViewCount" ? "view_desc" : "ViewCount";
 
             var articlesWithAuthor = db.Articles
-                .Include(p => p.Author);
+                .Include(p => p.Author).Include(a => a.Tags);
 
             switch (sortOrder)
             {
@@ -63,6 +64,12 @@ namespace Blog_MVC.Controllers
                 case "Author":
                     articlesWithAuthor = articlesWithAuthor.OrderBy(a => a.Author.FullName);
                     break;
+                case "view_desc":
+                    articlesWithAuthor = articlesWithAuthor.OrderByDescending(a => a.ViewCount);
+                    break;
+                case "ViewCount":
+                    articlesWithAuthor = articlesWithAuthor.OrderBy(a => a.ViewCount);
+                    break;
                 default: articlesWithAuthor = articlesWithAuthor.OrderByDescending(a => a.Date);
                     break;
             }
@@ -81,11 +88,19 @@ namespace Blog_MVC.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             var model = new ArticleViewModel();
-            Article article = db.Articles.Find(id);
+            Article article = db.Articles
+                .Where(a=> a.Id == id)
+                .Include(a=> a.Author)
+                .Include(a=> a.Tags)
+                .First();
+
             if (article == null)
             {
                 return HttpNotFound();
             }
+            article.ViewCount += 1;
+            db.SaveChanges();
+
             return View(article);
         }
 
@@ -113,6 +128,8 @@ namespace Blog_MVC.Controllers
                 var authorId = db.Users.Where(u => u.UserName == this.User.Identity.Name).First().Id;
 
                 var article = new Article(authorId, model.Title, model.Body, model.CategoryId);
+
+                this.SetArticleTags(article, model, db);
 
                 db.Articles.Add(article);
                 db.SaveChanges();
@@ -148,6 +165,8 @@ namespace Blog_MVC.Controllers
             model.CategoryId = article.CategoryId;
             model.Categories = db.Categories.OrderBy(c => c.Name).ToList();
 
+            model.Tags = string.Join(", ", article.Tags.Select(t => t.Name));
+
             return View(model);
         }
 
@@ -162,6 +181,7 @@ namespace Blog_MVC.Controllers
                 article.Title = model.Title;
                 article.Body = model.Body;
                 article.CategoryId = model.CategoryId;
+                this.SetArticleTags(article, model, db);
 
                 db.Entry(article).State = EntityState.Modified;
                 article.Author = db.Users.FirstOrDefault(u => u.UserName == User.Identity.Name);
@@ -169,6 +189,28 @@ namespace Blog_MVC.Controllers
                 return RedirectToAction("Index");
             }
             return View(model);
+        }
+
+        private void SetArticleTags(Article article, ArticleViewModel model, ApplicationDbContext db)
+        {
+            var tagStrings = model.Tags
+                .Split(new char[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(t => t.ToLower())
+                .Distinct();
+
+            article.Tags.Clear();
+
+            foreach (var tagString in tagStrings)
+            {
+                Tag tag = db.Tags.FirstOrDefault(t => t.Name.Equals(tagString));
+
+                if (tag == null)
+                {
+                    tag = new Tag() { Name = tagString };
+                    db.Tags.Add(tag);
+                }
+                article.Tags.Add(tag);
+            }
         }
 
         // GET: Articles/Delete/5
@@ -179,11 +221,25 @@ namespace Blog_MVC.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Article article = db.Articles.Find(id);
+            Article article = db.Articles
+                .Where(a=> a.Id == id)
+                .Include(a=> a.Author)
+                .Include(a=> a.Category)
+                .First();
+
+            if (!IsUserAuthorizedToEdit(article))
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.Forbidden);
+            }
+
+            ViewBag.TagString = string.Join(", ", article.Tags
+                .Select(t => t.Name));
+
             if (article == null)
             {
                 return HttpNotFound();
             }
+
             return View(article);
         }
 

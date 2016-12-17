@@ -9,9 +9,11 @@ namespace Blog_MVC.Models
 {
     public class Article
     {
+        private ICollection<Tag> tags;
+
         public Article()
         {
-            
+            this.tags = new HashSet<Tag>();
         }
 
         public Article(string authorId, string title, string body, int categoryId)
@@ -22,6 +24,7 @@ namespace Blog_MVC.Models
             this.CategoryId = categoryId;
             this.Date = DateTime.Now;
             this.Comments = new HashSet<Comment>();
+            this.tags = new HashSet<Tag>();
         }
 
         [Key]
@@ -41,6 +44,8 @@ namespace Blog_MVC.Models
         [ForeignKey("Author")]
         public string AuthorId { get; set; }
 
+        public int ViewCount { get; set; }
+
         public virtual ApplicationUser Author { get; set; }
 
         public virtual ICollection<Comment> Comments { get; set; }
@@ -55,5 +60,10 @@ namespace Blog_MVC.Models
             return this.Author.UserName.Equals(name);
         }
 
+        public virtual ICollection<Tag> Tags
+        {
+            get { return this.tags; }
+            set { this.tags = value; }
+        }
     }
 }

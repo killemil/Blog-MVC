@@ -14,12 +14,16 @@
 
         <h1><b>Всички ст@тии</b></h1>
 
+
         <p>
             @Html.ActionLink("Нова статия", "Create",null, new { @class = "btn btn-warning btn-xs" })
         </p>
         <div class="row">
-            <table class="table table-striped table-bordered">
+            <table class="table table-striped table-bordered", style="table-layout: fixed; width:100%;">
                 <tr>
+                    <th style="width: 70px">
+                        @Html.ActionLink("Видяна", "Index", new { @sortOrder = ViewBag.ViewSort })
+                    </th>
                     <th>
                         @Html.ActionLink("Заглавие", "Index", new { @sortOrder = ViewBag.TitleSort })
                     </th>
@@ -27,12 +31,13 @@
                         @Html.ActionLink("Съдаржание", "Index", new { @sortOrder = ViewBag.BodySort })
                     </th>
 
-                    <th>
+                    <th style="width: 180px">
                         @Html.ActionLink("Дата", "Index", new { @sortOrder = ViewBag.DateSort })
                     </th>
-                    <th>
+                    <th style="width: 80px">
                         @Html.ActionLink("Автор", "Index", new { @sortOrder = ViewBag.AuthorSort })
                     </th>
+                    
                     <th>
                         Действия
                     </th>
@@ -42,9 +47,12 @@
             {
                     <tr>
                         <td>
+                            @Html.DisplayFor(modelItem => article.ViewCount)
+                        </td>
+                        <td style="word-wrap: break-word">
                             @Html.ActionLink(@article.Title, "Details", "Article", new { @id = article.Id }, null)
                         </td>
-                        <td>
+                        <td style="word-wrap: break-word">
                             @Utils.CutText(article.Body)
                         </td>
                         <td>
@@ -60,6 +68,7 @@
                                 <i>(няма автор)</i>
                             }
                         </td>
+                        
                         <td>
                             @if (User.IsInRole("Admin") || article.IsAuthor(User.Identity.Name))
                             {
@@ -88,3 +97,4 @@
         </div>
     </div>
 </div>
+<hr />

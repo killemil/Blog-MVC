@@ -47,6 +47,30 @@
                 <dd>
                     @Html.ActionLink(Model.Category.Name,"ListByCategory","Home", new {@id = Model.Category.Id }, null)
                 </dd>
+                <p>
+
+                </p>
+                <dt>
+                    Тагове
+                </dt>
+
+                <dd>
+                    @foreach (var tag in Model.Tags)
+                    {
+                        @Html.ActionLink(tag.Name, "Index", "Tag", new { @id = tag.Id }, new { @class = "btn btn-success btn-xs" }) @:&nbsp;
+                        
+                    }
+                </dd>
+                <p>
+                </p>
+
+                <dt>
+                    Видяна
+                </dt>
+
+                <dd>
+                    @Model.ViewCount
+                 </dd>
 
             </dl>
         </div>
@@ -135,5 +159,6 @@
             </table>
 </div>
     </div>
+<hr />
     
 

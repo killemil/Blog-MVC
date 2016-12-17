@@ -1,0 +1,56 @@
+﻿@model List<Blog_MVC.Models.Article>
+
+@{
+    ViewBag.Title = "List";
+}
+
+<div class="container">
+    <div class="well">
+        <h1>
+            <b>
+                @Model.Count()
+                @if (Model.Count() == 1)
+            {
+                    @:статия с таг:
+            }
+            else
+            {
+                    @:статии с таг:
+            }
+                <u><i>@ViewBag.Tag.Name</i></u>
+            </b>
+        </h1>
+        <hr style="border: solid double #0094ff;  display: block;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    margin-left: auto;
+    margin-right: auto;
+    border-style: inset;
+    border-width: 1px;" />
+    </div>
+</div>
+@foreach (var article in Model)
+{
+    <div class="container">
+        <div class="well">
+            <article>
+                <div>
+                    <h2>
+                        @Html.ActionLink(@article.Title, "Details", "Article", new { @id = article.Id }, null)
+                    </h2>
+                </div>
+                <p style="width: auto; word-wrap: break-word;">
+                    @article.Body
+                </p>
+                <div class="pull-right">
+                    <small class="author">
+                        --публикувана от <i>@article.Author.FullName (@article.Author.UserName)</i>
+                        <p>на <i>@article.Date</i></p>
+                    </small>
+                </div>
+            </article>
+        </div>
+    </div>
+}
+
+<hr />
