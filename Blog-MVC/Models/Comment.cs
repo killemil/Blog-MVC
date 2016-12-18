@@ -29,7 +29,10 @@ namespace Blog_MVC.Models
         public virtual ApplicationUser Author { get; set; }
 
         public int ArticleId { get; set; }
-        
+
+        [StringLength(50)]
+        public string UnlogedUser { get; set; }
+
         [Required]
         public virtual Article Article { get; set; }
     }

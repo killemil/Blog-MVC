@@ -50,7 +50,10 @@ namespace Blog_MVC.Controllers
                 return HttpNotFound();
             }
 
-            comment.Author = db.Users.FirstOrDefault(u => u.UserName == User.Identity.Name);
+            if (User.Identity.IsAuthenticated)
+            {
+                comment.Author = db.Users.FirstOrDefault(u => u.UserName == User.Identity.Name);
+            }
 
             if (comment.Text.Count() > 255)
             {
