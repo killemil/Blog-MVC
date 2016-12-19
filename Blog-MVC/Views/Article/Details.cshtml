@@ -55,10 +55,17 @@
                 </dt>
 
                 <dd>
-                    @foreach (var tag in Model.Tags)
+                    @if (Model.Tags.Count == 0)
                     {
-                        @Html.ActionLink(tag.Name, "Index", "Tag", new { @id = tag.Id }, new { @class = "btn btn-success btn-xs" }) @:&nbsp;
-                        
+                        @: <i>няма тагове</i>
+                    }
+                    else
+                    {
+                        foreach (var tag in Model.Tags)
+                        {
+                            @Html.ActionLink(tag.Name, "Index", "Tag", new { @id = tag.Id }, new { @class = "btn btn-success btn-xs" }) @:&nbsp;
+
+                        }
                     }
                 </dd>
                 <p>

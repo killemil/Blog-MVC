@@ -25,7 +25,7 @@ namespace Blog_MVC.Controllers
         }
 
         // GET: Article
-        public ActionResult Index(string sortOrder, int page = 1, int pageSize = 5)
+        public ActionResult Index(string sortOrder,string currentFilter,string searchString, int page = 1, int pageSize = 5)
         {
             ViewBag.CurrentSort = sortOrder;
 
@@ -35,8 +35,25 @@ namespace Blog_MVC.Controllers
             ViewBag.AuthorSort = sortOrder == "Author" ? "author_desc" : "Author";
             ViewBag.ViewSort = sortOrder == "ViewCount" ? "view_desc" : "ViewCount";
 
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+
             var articlesWithAuthor = db.Articles
                 .Include(p => p.Author).Include(a => a.Tags);
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                articlesWithAuthor = articlesWithAuthor.Where(s => s.Title.Contains(searchString)
+                                                              || s.Body.Contains(searchString));
+            }
 
             switch (sortOrder)
             {
