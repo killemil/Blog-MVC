@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Blog_MVC.Models
 {
@@ -64,12 +65,11 @@ namespace Blog_MVC.Models
 
     public class RegisterViewModel
     {
-        [Required(ErrorMessage = "Елекнтронната поща е задължителна")]
-        [EmailAddress]
+        [Required(ErrorMessage = "Това поле е задължително")]
         [Display(Name = "Email")]
         public string Email { get; set; }
 
-        [Required(ErrorMessage = "Паролата е задължителна")]
+        [Required(ErrorMessage = "Това поле е задължително")]
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 1)]
         [DataType(DataType.Password)]
         [Display(Name = "Password")]
@@ -80,7 +80,7 @@ namespace Blog_MVC.Models
         [Compare("Password", ErrorMessage = "Паролите не съвпадат.")]
         public string ConfirmPassword { get; set; }
         
-        [Required(ErrorMessage = "Пълното име е задължително")]
+        [Required(ErrorMessage = "Това поле е задължително")]
         [StringLength(70)]
         [Display(Name = "Full Name")]
         public string FullName { get; set; }
@@ -114,4 +114,6 @@ namespace Blog_MVC.Models
         [Display(Name = "Email")]
         public string Email { get; set; }
     }
+
+   
 }

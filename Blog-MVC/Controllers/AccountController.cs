@@ -153,30 +153,33 @@ namespace Blog_MVC.Controllers
             var db = new ApplicationDbContext();
             var usersEmails = db.Users.Include(u => u.Email).Select(u=> u.Email).ToList();
 
-            if (usersEmails.Contains(model.Email))
+            if (!usersEmails.Contains(model.Email))
             {
-
-            }
-
-            if (ModelState.IsValid)
-            {
-                var user = new ApplicationUser
+                if (ModelState.IsValid)
                 {
-                    UserName = model.Email,
-                    Email = model.Email,
-                    FullName = model.FullName
-                };
-                var result = await UserManager.CreateAsync(user, model.Password);
+                    var user = new ApplicationUser
+                    {
+                        UserName = model.Email,
+                        Email = model.Email,
+                        FullName = model.FullName
+                    };
+                    var result = await UserManager.CreateAsync(user, model.Password);
 
-                var addRoleResult = UserManager.AddToRole(user.Id, "User");
+                    var addRoleResult = UserManager.AddToRole(user.Id, "User");
 
-                if (result.Succeeded)
-                {
-                    await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
-                    
-                    return RedirectToAction("Index", "Home");
+                    if (result.Succeeded)
+                    {
+                        await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+
+                        return RedirectToAction("Index", "Home");
+                    }
+
+                    AddErrors(result);
                 }
-                AddErrors(result);
+            }
+            else
+            {
+                ModelState.AddModelError("", "Този Email адрес вече съществува");
             }
 
             // If we got this far, something failed, redisplay form
